@@ -34,6 +34,18 @@ namespace wrap_orbit_bunch{
 		self->cpp_obj = NULL;
 		return (PyObject *) self;
 	}
+	
+	void check_file_existence(const char* file_name)
+	{
+		/* try to open file to read */
+		FILE *file;
+		if (file = fopen(file_name, "r")) {
+      fclose(file);
+    } else {
+      error("The input file for Bunch does not exist! Stop!");
+    }
+    
+	}
 
   //initializator for python Bunch class
   //this is implementation of the __init__ method
@@ -1118,6 +1130,7 @@ namespace wrap_orbit_bunch{
         if(!PyArg_ParseTuple(	args,"s:read",&file_name)){
           error("PyBunch - readBunch(fileName) - a file name are needed");
         }
+        check_file_existence(file_name);
 				cpp_bunch->initBunchAttributes(file_name);
 				cpp_bunch->readParticleAttributes(file_name);
         cpp_bunch->readBunchCoords(file_name);
@@ -1127,6 +1140,7 @@ namespace wrap_orbit_bunch{
         if(!PyArg_ParseTuple(	args,"si:read",&file_name,&nParts)){
           error("PyBunch - readBunch(fileName,nParts) - file name, and number of particles are needed");
         }
+        check_file_existence(file_name);
 				cpp_bunch->initBunchAttributes(file_name);
 				cpp_bunch->readParticleAttributes(file_name);				
         cpp_bunch->readBunchCoords(file_name,nParts);
